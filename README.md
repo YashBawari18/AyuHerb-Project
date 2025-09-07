@@ -15,5 +15,3 @@ A blockchain-based system to track Ayurvedic herbs from farm to consumer.
 - `frontend/` - Web pages for users
 - `dashboard/` - Admin control panel
 
-## Getting Started:
-We'll build this step by step, starting with the backend server.
