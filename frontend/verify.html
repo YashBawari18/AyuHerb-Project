@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Verification - Ayurvedic Traceability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #FF6B6B;
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: #FF6B6B;
+            text-decoration: none;
+            margin-top: 15px;
+            padding: 8px 20px;
+            border: 2px solid #FF6B6B;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #FF6B6B;
+        }
+
+        .btn {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #FF5252;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #f5c6cb;
+            text-align: center;
+        }
+
+        .product-info {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #4ECDC4;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ECDC4;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Product Verification</h1>
+            <p>Enter Event ID to view complete herb traceability</p>
+            <a href="/" class="nav-link">← Back to Home</a>
+        </div>
+
+        <div class="search-section">
+            <h2 style="text-align: center; margin-bottom: 20px;">🔍 Verify Your Product</h2>
+            
+            <div class="search-form">
+                <input 
+                    type="text" 
+                    id="eventIdInput" 
+                    class="search-input" 
+                    placeholder="Enter Event ID from your product"
+                >
+                <button id="searchBtn" class="btn">🔍 Verify Product</button>
+            </div>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            <div id="loadingDiv" class="loading">Verifying product...</div>
+            <div id="productResults" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('searchBtn').addEventListener('click', searchProduct);
+        document.getElementById('eventIdInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchProduct();
+        });
+
+        async function searchProduct() {
+            const eventId = document.getElementById('eventIdInput').value.trim();
+            if (!eventId) {
+                alert('Please enter an Event ID');
+                return;
+            }
+
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('loadingDiv').style.display = 'block';
+            document.getElementById('productResults').style.display = 'none';
+            
+            document.getElementById('searchBtn').disabled = true;
+            document.getElementById('searchBtn').textContent = '🔍 Verifying...';
+
+            try {
+                const response = await fetch(`/api/trace/${eventId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    showError(`Product not found: ${data.message}`);
+                }
+            } catch (error) {
+                showError('Network error. Please try again.');
+            }
+
+            document.getElementById('searchBtn').disabled = false;
+            document.getElementById('searchBtn').textContent = '🔍 Verify Product';
+        }
+
+        function displayResults(data) {
+            document.getElementById('loadingDiv').style.display = 'none';
+            
+            const html = `
+                <div class="product-info">
+                    <h2>🌿 ${data.herbInfo.species} Product</h2>
+                    <p><strong>Status:</strong> ${data.herbInfo.status}</p>
+                    <p><strong>Event ID:</strong> ${data.eventId}</p>
+                </div>
+
+                <h3>📋 Traceability Timeline</h3>
+                <div class="timeline">
+                    ${data.traceability.map(event => `
+                        <div class="timeline-item">
+                            <h4>${getEventTitle(event.type)}</h4>
+                            <p><strong>Date:</strong> ${new Date(event.timestamp).toLocaleString()}</p>
+                            ${getEventDetails(event)}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('productResults').innerHTML = html;
+            document.getElementById('productResults').style.display = 'block';
+        }
+
+        function getEventTitle(type) {
+            switch (type) {
+                case 'COLLECTION_EVENT': return '🌱 Herb Collection';
+                case 'QUALITY_TEST': return '🧪 Quality Test';
+                case 'PROCESSING_EVENT': return '⚙️ Processing';
+                default: return '📋 Event';
+            }
+        }
+
+        function getEventDetails(event) {
+            switch (event.type) {
+                case 'COLLECTION_EVENT':
+                    let collectionHtml = `
+                        <p><strong>Collector:</strong> ${event.data.collectorName}</p>
+                        <p><strong>Quantity:</strong> ${event.data.quantity} kg</p>
+                        <p><strong>Location:</strong> ${event.data.location.latitude.toFixed(4)}, ${event.data.location.longitude.toFixed(4)}</p>
+                    `;
+                    
+                    // Add photo if available
+                    if (event.data.photoPath) {
+                        collectionHtml += `
+                            <div style="margin-top: 15px;">
+                                <strong>📸 Herb Photo:</strong><br>
+                                <img src="${event.data.photoPath}" alt="Herb Photo" style="max-width: 300px; max-height: 200px; border-radius: 8px; margin-top: 10px; border: 2px solid #ddd;">
+                                <p style="font-size: 12px; color: #666; margin-top: 5px;">Photo taken during collection</p>
+                            </div>
+                        `;
+                    }
+                    
+                    return collectionHtml;
+                case 'QUALITY_TEST':
+                    return `
+                        <p><strong>Laboratory:</strong> ${event.data.laboratoryName}</p>
+                        <p><strong>Result:</strong> ${event.data.passed ? '✅ PASSED' : '❌ FAILED'}</p>
+                    `;
+                case 'PROCESSING_EVENT':
+                    return `
+                        <p><strong>Processor:</strong> ${event.data.processorName}</p>
+                        <p><strong>Process:</strong> ${event.data.processType}</p>
+                    `;
+                default:
+                    return '<p>Event recorded on blockchain</p>';
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loadingDiv').style.display = 'none';
+            document.getElementById('productResults').innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Verification Failed</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+            document.getElementById('productResults').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

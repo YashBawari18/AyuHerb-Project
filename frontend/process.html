@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Portal - Ayurvedic Traceability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #9C27B0;
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: #9C27B0;
+            text-decoration: none;
+            margin-top: 15px;
+            padding: 8px 20px;
+            border: 2px solid #9C27B0;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: #9C27B0;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab.active {
+            background: #9C27B0;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #9C27B0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #9C27B0;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #8E24AA;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .quality-result {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .quality-result label {
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-item input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Processing Portal</h1>
+            <p>Add quality tests and processing events to the blockchain</p>
+            <a href="/" class="nav-link">← Back to Home</a>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('quality')">🧪 Quality Testing</button>
+            <button class="tab" onclick="switchTab('processing')">⚙️ Processing</button>
+            <button class="tab" onclick="switchTab('qr-generation')">📱 QR Generation</button>
+        </div>
+
+        <!-- Quality Testing Tab -->
+        <div id="quality" class="tab-content active">
+            <h2>🧪 Laboratory Quality Testing</h2>
+            <div class="info-section">
+                <h3>📋 Instructions for Lab Technicians</h3>
+                <p>Record quality test results for herbs that have been collected. You'll need the Event ID from the collection event.</p>
+            </div>
+
+            <form id="qualityForm">
+                <div class="form-group">
+                    <label for="eventId">Event ID (from collection) *</label>
+                    <input type="text" id="eventId" required placeholder="Paste the Event ID from the herb collection">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="laboratoryId">Laboratory ID *</label>
+                        <input type="text" id="laboratoryId" required placeholder="Your lab's unique ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="laboratoryName">Laboratory Name *</label>
+                        <input type="text" id="laboratoryName" required placeholder="Full laboratory name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="testType">Test Type *</label>
+                    <select id="testType" required>
+                        <option value="">Select test type</option>
+                        <option value="Moisture Content">Moisture Content</option>
+                        <option value="Pesticide Residue">Pesticide Residue Analysis</option>
+                        <option value="Heavy Metals">Heavy Metals Testing</option>
+                        <option value="DNA Barcoding">DNA Barcoding/Authentication</option>
+                        <option value="Microbial Testing">Microbial Contamination</option>
+                        <option value="Active Compounds">Active Compound Analysis</option>
+                        <option value="Purity Test">Purity Testing</option>
+                        <option value="Complete Analysis">Complete Quality Analysis</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="testResults">Test Results/Data</label>
+                    <textarea id="testResults" rows="4" placeholder="Enter detailed test results, measurements, and observations..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Test Result *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="passed" name="testResult" value="true" required>
+                            <label for="passed">✅ PASSED - Meets quality standards</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="failed" name="testResult" value="false" required>
+                            <label for="failed">❌ FAILED - Does not meet standards</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="testDate">Test Date</label>
+                    <input type="datetime-local" id="testDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="qualityNotes">Additional Notes</label>
+                    <textarea id="qualityNotes" rows="3" placeholder="Any additional observations, recommendations, or notes..."></textarea>
+                </div>
+
+                <button type="submit" class="btn">🔗 Record Quality Test on Blockchain</button>
+            </form>
+
+            <div id="qualityMessage"></div>
+        </div>
+
+        <!-- Processing Tab -->
+        <div id="processing" class="tab-content">
+            <h2>⚙️ Herb Processing</h2>
+            <div class="info-section">
+                <h3>📋 Instructions for Processors</h3>
+                <p>Record processing activities like drying, grinding, packaging, etc. You'll need the Event ID from previous steps.</p>
+            </div>
+
+            <form id="processingForm">
+                <div class="form-group">
+                    <label for="processEventId">Event ID *</label>
+                    <input type="text" id="processEventId" required placeholder="Event ID from collection or previous processing">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="processorId">Processor ID *</label>
+                        <input type="text" id="processorId" required placeholder="Your processor/facility ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="processorName">Processor Name *</label>
+                        <input type="text" id="processorName" required placeholder="Processing facility name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="processType">Processing Type *</label>
+                    <select id="processType" required>
+                        <option value="">Select processing type</option>
+                        <option value="Cleaning">Cleaning & Sorting</option>
+                        <option value="Drying">Drying/Dehydration</option>
+                        <option value="Grinding">Grinding/Powdering</option>
+                        <option value="Extraction">Extraction Process</option>
+                        <option value="Packaging">Packaging</option>
+                        <option value="Formulation">Product Formulation</option>
+                        <option value="Quality Control">Quality Control Processing</option>
+                        <option value="Storage">Storage/Warehousing</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="outputQuantity">Output Quantity (kg)</label>
+                        <input type="number" id="outputQuantity" min="0" step="0.1" placeholder="Final quantity after processing">
+                    </div>
+                    <div class="form-group">
+                        <label for="processDate">Processing Date</label>
+                        <input type="datetime-local" id="processDate">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="processNotes">Processing Notes</label>
+                    <textarea id="processNotes" rows="4" placeholder="Describe the processing methods, equipment used, conditions, etc..."></textarea>
+                </div>
+
+                <button type="submit" class="btn">🔗 Record Processing on Blockchain</button>
+            </form>
+
+            <div id="processingMessage"></div>
+        </div>
+
+        <!-- QR Generation Tab -->
+        <div id="qr-generation" class="tab-content">
+            <h2>📱 QR Code Generation</h2>
+            <div class="info-section">
+                <h3>📋 Generate Product QR Codes</h3>
+                <p>Create QR codes for final products that consumers can scan to view complete traceability.</p>
+            </div>
+
+            <form id="qrForm">
+                <div class="form-group">
+                    <label for="qrEventId">Event ID *</label>
+                    <input type="text" id="qrEventId" required placeholder="Event ID of the herb to generate QR for">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" required placeholder="Final product name (e.g., Organic Ashwagandha Powder)">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchId">Batch ID</label>
+                        <input type="text" id="batchId" placeholder="Production batch identifier">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">📱 Generate QR Code</button>
+            </form>
+
+            <div id="qrMessage"></div>
+            <div id="qrCodeDisplay" style="text-align: center; margin-top: 30px; display: none;">
+                <h3>Generated QR Code:</h3>
+                <div id="qrCodeImage" style="margin: 20px 0;"></div>
+                <p><strong>Verification URL:</strong> <span id="verifyUrl"></span></p>
+                <p><em>Print this QR code and attach it to your product packaging</em></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default dates to current time
+        document.getElementById('testDate').value = new Date().toISOString().slice(0, 16);
+        document.getElementById('processDate').value = new Date().toISOString().slice(0, 16);
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Quality Test Form
+        document.getElementById('qualityForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔗 Recording on Blockchain...';
+
+            const formData = {
+                eventId: document.getElementById('eventId').value,
+                laboratoryId: document.getElementById('laboratoryId').value,
+                laboratoryName: document.getElementById('laboratoryName').value,
+                testType: document.getElementById('testType').value,
+                testResults: document.getElementById('testResults').value,
+                passed: document.querySelector('input[name="testResult"]:checked').value === 'true',
+                testDate: document.getElementById('testDate').value,
+                notes: document.getElementById('qualityNotes').value
+            };
+
+            try {
+                const response = await fetch('/api/quality-test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('qualityMessage', `
+                        <strong>✅ Success!</strong><br>
+                        Quality test recorded on blockchain.<br>
+                        <strong>Test ID:</strong> ${data.testId}<br>
+                        <strong>Block ID:</strong> ${data.blockId}
+                    `, 'success');
+                    this.reset();
+                    document.getElementById('testDate').value = new Date().toISOString().slice(0, 16);
+                } else {
+                    showMessage('qualityMessage', `❌ Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showMessage('qualityMessage', '❌ Network error. Please try again.', 'error');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        });
+
+        // Processing Form
+        document.getElementById('processingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔗 Recording on Blockchain...';
+
+            const formData = {
+                eventId: document.getElementById('processEventId').value,
+                processorId: document.getElementById('processorId').value,
+                processorName: document.getElementById('processorName').value,
+                processType: document.getElementById('processType').value,
+                processDate: document.getElementById('processDate').value,
+                outputQuantity: document.getElementById('outputQuantity').value,
+                notes: document.getElementById('processNotes').value
+            };
+
+            try {
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('processingMessage', `
+                        <strong>✅ Success!</strong><br>
+                        Processing event recorded on blockchain.<br>
+                        <strong>Process ID:</strong> ${data.processId}<br>
+                        <strong>Block ID:</strong> ${data.blockId}
+                    `, 'success');
+                    this.reset();
+                    document.getElementById('processDate').value = new Date().toISOString().slice(0, 16);
+                } else {
+                    showMessage('processingMessage', `❌ Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showMessage('processingMessage', '❌ Network error. Please try again.', 'error');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        });
+
+        // QR Generation Form
+        document.getElementById('qrForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '📱 Generating QR Code...';
+
+            const formData = {
+                eventId: document.getElementById('qrEventId').value,
+                productName: document.getElementById('productName').value,
+                batchId: document.getElementById('batchId').value
+            };
+
+            try {
+                const response = await fetch('/api/generate-qr', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('qrMessage', `
+                        <strong>✅ QR Code Generated Successfully!</strong><br>
+                        Your product is now ready for consumer verification.
+                    `, 'success');
+
+                    // Display QR code
+                    document.getElementById('qrCodeImage').innerHTML = `<img src="${data.qrCode}" alt="Product QR Code" style="max-width: 300px;">`;
+                    document.getElementById('verifyUrl').textContent = data.verifyUrl;
+                    document.getElementById('qrCodeDisplay').style.display = 'block';
+                    
+                    this.reset();
+                } else {
+                    showMessage('qrMessage', `❌ Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showMessage('qrMessage', '❌ Network error. Please try again.', 'error');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        });
+
+        function showMessage(elementId, message, type) {
+            const messageDiv = document.getElementById(elementId);
+            messageDiv.innerHTML = message;
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            
+            // Scroll to message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            // Clear success messages after 8 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    messageDiv.className = '';
+                }, 8000);
+            }
+        }
+    </script>
+</body>
+</html>

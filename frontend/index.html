@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurvedic Herb Traceability System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .feature-item h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .status-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Ayurvedic Herb Traceability</h1>
+            <p class="subtitle">Blockchain-powered transparency from farm to consumer</p>
+            <div class="status-bar">
+                <div id="status">Connecting to blockchain network...</div>
+            </div>
+        </header>
+
+        <div class="cards">
+            <div class="card" onclick="location.href='/collect'">
+                <div class="card-icon">🌱</div>
+                <h3>Collectors Portal</h3>
+                <p>For farmers and wild collectors to record herb collection with GPS location and quality details.</p>
+                <a href="/collect" class="btn">Start Collection</a>
+            </div>
+
+            <div class="card" onclick="location.href='/process'">
+                <div class="card-icon">🧪</div>
+                <h3>Processing Portal</h3>
+                <p>For labs and processors to add quality tests and processing information to the blockchain.</p>
+                <a href="/process" class="btn">Process Herbs</a>
+            </div>
+
+            <div class="card" onclick="location.href='/verify'">
+                <div class="card-icon">📱</div>
+                <h3>Consumer Verification</h3>
+                <p>Scan QR codes on products to view complete traceability from farm to shelf.</p>
+                <a href="/verify" class="btn">Verify Product</a>
+            </div>
+
+            <div class="card" onclick="location.href='/dashboard'">
+                <div class="card-icon">📊</div>
+                <h3>Admin Dashboard</h3>
+                <p>Monitor blockchain network, view analytics, and generate compliance reports.</p>
+                <a href="/dashboard" class="btn">View Dashboard</a>
+            </div>
+
+            <div class="card" onclick="location.href='/analytics'">
+                <div class="card-icon">📈</div>
+                <h3>Advanced Analytics</h3>
+                <p>Interactive charts, trends analysis, and comprehensive blockchain data visualization.</p>
+                <a href="/analytics" class="btn">View Analytics</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>System Features</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>📍 Geo-Tagged Collection</h4>
+                    <p>GPS coordinates recorded for every herb collection event with timestamp and collector details.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🔗 Blockchain Security</h4>
+                    <p>Immutable records ensure data integrity and prevent tampering throughout the supply chain.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🧪 Quality Assurance</h4>
+                    <p>Laboratory test results and quality metrics are permanently recorded on the blockchain.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📱 QR Code Scanning</h4>
+                    <p>Consumers can instantly access complete product history by scanning QR codes.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🌍 Sustainability Tracking</h4>
+                    <p>Monitor environmental impact and ensure compliance with conservation guidelines.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📈 Real-time Analytics</h4>
+                    <p>Dashboard provides insights into supply chain efficiency and quality trends.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check blockchain status
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/blockchain/status');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('status').innerHTML = `
+                        ✅ Blockchain Active | ${data.totalBlocks} blocks | ${data.totalHerbs} herbs tracked
+                    `;
+                } else {
+                    document.getElementById('status').textContent = '❌ Blockchain connection failed';
+                }
+            } catch (error) {
+                document.getElementById('status').textContent = '⚠️ Server not running - Please start the server';
+            }
+        }
+
+        // Check status when page loads
+        checkStatus();
+        
+        // Refresh status every 30 seconds
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>

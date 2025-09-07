@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herb Collection Portal - Ayurvedic Traceability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: #4CAF50;
+            text-decoration: none;
+            margin-top: 15px;
+            padding: 8px 20px;
+            border: 2px solid #4CAF50;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .location-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .location-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+        }
+
+        .btn-secondary:hover {
+            background: #1976D2;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .location-display {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #4CAF50;
+        }
+
+        .herb-species-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .herb-option {
+            padding: 10px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .herb-option:hover {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+        }
+
+        .herb-option.selected {
+            background: #4CAF50;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .location-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Herb Collection Portal</h1>
+            <p>Record your herb collection with GPS location for blockchain traceability</p>
+            <a href="/" class="nav-link">← Back to Home</a>
+        </div>
+
+        <div class="form-container">
+            <form id="collectionForm">
+                <div class="form-group">
+                    <label for="collectorId">Collector ID *</label>
+                    <input type="text" id="collectorId" name="collectorId" required placeholder="Your unique collector ID">
+                </div>
+
+                <div class="form-group">
+                    <label for="collectorName">Collector Name *</label>
+                    <input type="text" id="collectorName" name="collectorName" required placeholder="Your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="herbSpecies">Herb Species *</label>
+                    <select id="herbSpecies" name="herbSpecies" required>
+                        <option value="">Select herb species</option>
+                        <option value="Ashwagandha">Ashwagandha (Withania somnifera)</option>
+                        <option value="Turmeric">Turmeric (Curcuma longa)</option>
+                        <option value="Brahmi">Brahmi (Bacopa monnieri)</option>
+                        <option value="Tulsi">Tulsi (Ocimum sanctum)</option>
+                        <option value="Neem">Neem (Azadirachta indica)</option>
+                        <option value="Aloe Vera">Aloe Vera (Aloe barbadensis)</option>
+                        <option value="Amla">Amla (Emblica officinalis)</option>
+                        <option value="Ginger">Ginger (Zingiber officinale)</option>
+                        <option value="Fenugreek">Fenugreek (Trigonella foenum-graecum)</option>
+                        <option value="Other">Other (specify in notes)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity (kg) *</label>
+                    <input type="number" id="quantity" name="quantity" min="0.1" step="0.1" required placeholder="Weight in kilograms">
+                </div>
+
+                <div class="location-section">
+                    <h3>📍 Collection Location</h3>
+                    <p>Accurate GPS coordinates are required for traceability compliance.</p>
+                    
+                    <div class="location-buttons">
+                        <button type="button" id="getLocationBtn" class="btn btn-secondary">
+                            📍 Get My Current Location
+                        </button>
+                        <button type="button" id="manualLocationBtn" class="btn">
+                            ✏️ Enter Location Manually
+                        </button>
+                    </div>
+
+                    <div id="locationDisplay" class="location-display" style="display: none;">
+                        <strong>Location Captured:</strong>
+                        <div id="locationText"></div>
+                    </div>
+
+                    <div id="manualLocationForm" style="display: none; margin-top: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="latitude">Latitude *</label>
+                                <input type="number" id="latitude" name="latitude" step="any" placeholder="e.g., 28.7041">
+                            </div>
+                            <div class="form-group">
+                                <label for="longitude">Longitude *</label>
+                                <input type="number" id="longitude" name="longitude" step="any" placeholder="e.g., 77.1025">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="harvestDate">Harvest Date</label>
+                    <input type="datetime-local" id="harvestDate" name="harvestDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="herbPhoto">📸 Herb Photo (Optional)</label>
+                    <input type="file" id="herbPhoto" name="herbPhoto" accept="image/*" capture="environment">
+                    <p style="font-size: 14px; color: #666; margin-top: 5px;">Upload a photo of the collected herbs for visual verification</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="qualityNotes">Quality Notes</label>
+                    <textarea id="qualityNotes" name="qualityNotes" rows="4" placeholder="Describe the quality, condition, and any notable characteristics of the collected herbs..."></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn" style="width: 100%; margin-top: 20px;">
+                    🔗 Record on Blockchain
+                </button>
+            </form>
+
+            <div id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLocation = null;
+
+        // Get current location
+        document.getElementById('getLocationBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = '📍 Getting Location...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        currentLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy
+                        };
+
+                        document.getElementById('latitude').value = currentLocation.latitude;
+                        document.getElementById('longitude').value = currentLocation.longitude;
+                        
+                        document.getElementById('locationText').innerHTML = `
+                            <div>Latitude: ${currentLocation.latitude.toFixed(6)}</div>
+                            <div>Longitude: ${currentLocation.longitude.toFixed(6)}</div>
+                            <div>Accuracy: ±${Math.round(currentLocation.accuracy)}m</div>
+                        `;
+                        
+                        document.getElementById('locationDisplay').style.display = 'block';
+                        document.getElementById('manualLocationForm').style.display = 'none';
+                        
+                        btn.disabled = false;
+                        btn.textContent = '📍 Location Captured ✓';
+                        btn.style.background = '#4CAF50';
+                    },
+                    function(error) {
+                        let errorMessage = 'Location access denied. Please enable location services.';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = 'Location access denied. Please enable location services and try again.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = 'Location information unavailable. Please enter manually.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = 'Location request timed out. Please try again.';
+                                break;
+                        }
+                        
+                        showMessage(errorMessage, 'error');
+                        document.getElementById('manualLocationForm').style.display = 'block';
+                        
+                        btn.disabled = false;
+                        btn.textContent = '📍 Try Again';
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            } else {
+                showMessage('Geolocation is not supported by this browser. Please enter location manually.', 'error');
+                document.getElementById('manualLocationForm').style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '📍 Not Supported';
+            }
+        });
+
+        // Show manual location form
+        document.getElementById('manualLocationBtn').addEventListener('click', function() {
+            document.getElementById('manualLocationForm').style.display = 'block';
+            document.getElementById('locationDisplay').style.display = 'none';
+        });
+
+        // Set default harvest date to now
+        document.getElementById('harvestDate').value = new Date().toISOString().slice(0, 16);
+
+        // Form submission
+        document.getElementById('collectionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            
+            // Validate location
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+            
+            if (!latitude || !longitude) {
+                showMessage('Please provide GPS coordinates by either using current location or entering manually.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔗 Recording on Blockchain...';
+
+            const formData = new FormData();
+            formData.append('collectorId', document.getElementById('collectorId').value);
+            formData.append('collectorName', document.getElementById('collectorName').value);
+            formData.append('herbSpecies', document.getElementById('herbSpecies').value);
+            formData.append('quantity', document.getElementById('quantity').value);
+            formData.append('latitude', parseFloat(latitude));
+            formData.append('longitude', parseFloat(longitude));
+            formData.append('harvestDate', document.getElementById('harvestDate').value);
+            formData.append('qualityNotes', document.getElementById('qualityNotes').value);
+            
+            // Add photo if selected
+            const photoFile = document.getElementById('herbPhoto').files[0];
+            if (photoFile) {
+                formData.append('herbPhoto', photoFile);
+            }
+
+            try {
+                const response = await fetch('/api/collect', {
+                    method: 'POST',
+                    body: formData // Remove Content-Type header to let browser set it with boundary
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage(`
+                        <strong>✅ Success!</strong><br>
+                        Collection event recorded on blockchain.<br>
+                        <strong>Event ID:</strong> ${data.eventId}<br>
+                        <strong>Block ID:</strong> ${data.blockId}<br>
+                        <em>Save this Event ID for future reference and QR code generation.</em>
+                    `, 'success');
+
+                    // Reset form
+                    document.getElementById('collectionForm').reset();
+                    document.getElementById('harvestDate').value = new Date().toISOString().slice(0, 16);
+                    document.getElementById('locationDisplay').style.display = 'none';
+                    document.getElementById('manualLocationForm').style.display = 'none';
+                    currentLocation = null;
+                    
+                    // Reset location button
+                    document.getElementById('getLocationBtn').textContent = '📍 Get My Current Location';
+                    document.getElementById('getLocationBtn').style.background = '';
+                    
+                } else {
+                    showMessage(`❌ Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Network error. Please check your connection and try again.', 'error');
+                console.error('Submission error:', error);
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        });
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = message;
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            
+            // Scroll to message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            // Clear message after 10 seconds for success, keep error messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    messageDiv.className = '';
+                }, 10000);
+            }
+        }
+    </script>
+</body>
+</html>
